@@ -41,7 +41,6 @@ public class SalaController {
         }
 
         modelAndView.addObject("sala", sala);
-        modelAndView.addObject("sessoes", sessaoDao.buscaSessoasDaSala(sala));
 
         return modelAndView;
     }
