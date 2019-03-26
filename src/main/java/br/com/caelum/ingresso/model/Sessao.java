@@ -32,6 +32,7 @@ public class Sessao {
 	 * Esse construtor deve ser usado apenas pelo Hibernate
 	 */
 	public Sessao() {}
+	
 	public LocalTime getHorarioTermino() {
 		return this.horario.plusMinutes(filme.getDuracao().toMinutes());
 	}

@@ -1,5 +1,7 @@
 package br.com.caelum.ingresso.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.caelum.ingresso.dao.FilmeDao;
 import br.com.caelum.ingresso.dao.SalaDao;
-
 import br.com.caelum.ingresso.dao.SessaoDao;
+import br.com.caelum.ingresso.model.Sessao;
 import br.com.caelum.ingresso.model.form.SessaoForm;
+import br.com.caelum.ingresso.validacao.GerenciadorDeSessao;
 
 @Controller
 public class SessaoController {
@@ -24,35 +27,46 @@ public class SessaoController {
 	private SalaDao salaDao;
 	@Autowired
 	private FilmeDao filmeDao;
-	
+
 	@Autowired
 	private SessaoDao sessaoDao;
 
-	@GetMapping("/admin/sessao") // esse annotation garante que o método seja sempre o GET. 
-	// A vantagem de usar é que podemos fazer um mapping para post e outro para get na mesma requisição
+	@GetMapping("/admin/sessao") // esse annotation garante que o método seja sempre o GET.
+	// A vantagem de usar é que podemos fazer um mapping para post e outro para get
+	// na mesma requisição
 	public ModelAndView form(@RequestParam("salaId") Integer salaId, SessaoForm sessaoForm) {
-		
+
 		sessaoForm.setSalaId(salaId);
-		
-		// o requestparam faz: pega o parametro que vem da jsp e transforma na variável declarada
+
+		// o requestparam faz: pega o parametro que vem da jsp e transforma na variável
+		// declarada
 		ModelAndView mav = new ModelAndView("sessao/sessao");
-		
+
 		mav.addObject("sala", salaDao.findOne(salaId));
 		mav.addObject("filmes", filmeDao.findAll());
 		mav.addObject("form", sessaoForm);
 		return mav;
 
 	}
-	
+
 	@PostMapping(value = "/admin/sessao")
 	@Transactional
 	public ModelAndView salva(@Valid SessaoForm form, BindingResult result) {
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			return form(form.getSalaId(), form);
 		}
-		sessaoDao.save(form.toSessao(salaDao, filmeDao));
-		
-		return new ModelAndView("redirect:/admin/sala/" + form.getSalaId() + "/sessoes");
+		Sessao sessao = form.toSessao(salaDao, filmeDao);
+		List<Sessao> sessoesDaSala = sessaoDao.buscaSessoasDaSala(sessao.getSala());
+
+		GerenciadorDeSessao gerenciador = new GerenciadorDeSessao(sessoesDaSala);
+
+		if (gerenciador.cabe(sessao)) {
+
+			sessaoDao.save(form.toSessao(salaDao, filmeDao));
+
+			return new ModelAndView("redirect:/admin/sala/" + form.getSalaId() + "/sessoes");
+		}
+		return form(form.getSalaId(), form);
 	}
 
 }
