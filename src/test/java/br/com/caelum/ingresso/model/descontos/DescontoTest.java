@@ -26,5 +26,33 @@ public class DescontoTest {
 
 		Assert.assertEquals(precoEsperado, ingresso.getPreco());
 	}
+	
+	@Test
+	public void garanteQueIngressosComDescontoDeBancoEstejamSendoCalculadosComTrintaPorcentoDeDesconto() {
+		Sala sala = new Sala("IMAX", new BigDecimal("10.0"));
+		Filme filme = new Filme("Frozen", Duration.ofMinutes(90), "infantil", new BigDecimal("10.0"));
+		Sessao sessao = new Sessao(LocalTime.parse("10:00:00"), sala, filme);
+		
+		Ingresso ingresso = new Ingresso(sessao, new DescontoParaBancos());
+		
+		BigDecimal precoEsperado = new BigDecimal("14.00");
+		
+
+		Assert.assertEquals(precoEsperado, ingresso.getPreco());
+	}
+	
+	@Test
+	public void garanteQueEstudantesPaguemMeiaEntrada() {
+		Sala sala = new Sala("IMAX", new BigDecimal("10.0"));
+		Filme filme = new Filme("Frozen", Duration.ofMinutes(90), "infantil", new BigDecimal("10.0"));
+		Sessao sessao = new Sessao(LocalTime.parse("10:00:00"), sala, filme);
+		
+		Ingresso ingresso = new Ingresso(sessao, new DescontoParaEstudantes());
+		
+		BigDecimal precoEsperado = new BigDecimal("10.00");
+		
+
+		Assert.assertEquals(precoEsperado, ingresso.getPreco());
+	}
 
 }
