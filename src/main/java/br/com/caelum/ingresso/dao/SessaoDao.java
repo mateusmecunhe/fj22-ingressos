@@ -32,6 +32,7 @@ public class SessaoDao {
 	}
 	
 	public Sessao findOne(Integer id) {
-		return manager.find(Sessao.class, id);
+		//return manager.find(Sessao.class, id);
+		return manager.createQuery("select s from Sessao s where s.id = :id", Sessao.class).setParameter("id", id).getSingleResult();
 	}
 }

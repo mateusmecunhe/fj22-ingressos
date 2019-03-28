@@ -63,6 +63,22 @@ public class Ingresso {
 	public void setPreco(BigDecimal preco) {
 		this.preco = preco;
 	}
+
+	public Sessao getSessao() {
+		return this.sessao;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public void setSessao(Sessao sessao) {
+		this.sessao = sessao;
+	}
 	
 	
 	

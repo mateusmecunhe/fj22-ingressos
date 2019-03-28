@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import br.com.caelum.ingresso.dao.FilmeDao;
 import br.com.caelum.ingresso.dao.SalaDao;
 import br.com.caelum.ingresso.dao.SessaoDao;
+import br.com.caelum.ingresso.model.Carrinho;
 import br.com.caelum.ingresso.model.ImagemCapa;
 import br.com.caelum.ingresso.model.Sessao;
 import br.com.caelum.ingresso.model.TipoDeIngresso;
@@ -38,6 +39,9 @@ public class SessaoController {
 	
 	@Autowired
 	private OmdbClient client;
+	
+	@Autowired
+	private Carrinho carrinho;
 
 	@GetMapping("/admin/sessao") // esse annotation garante que o método seja sempre o GET.
 	// A vantagem de usar é que podemos fazer um mapping para post e outro para get
@@ -85,6 +89,7 @@ public class SessaoController {
 		Optional<ImagemCapa> imagemCapa = client.request(sessao.getFilme(), ImagemCapa.class);
 		
 		mav.addObject("sessao", sessao);
+		mav.addObject("carrinho", carrinho);
 		mav.addObject("imagemCapa", imagemCapa.orElse(new ImagemCapa()));
 		mav.addObject("tiposDeIngressos", TipoDeIngresso.values());
 		

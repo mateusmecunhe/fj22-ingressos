@@ -22,7 +22,7 @@ public class Lugar {
 
     @NotNull
     private Integer posicao;
-
+    //idealmente, colocar atributo sala onetomany
     /**
      * @deprecated hibernate only
      */
